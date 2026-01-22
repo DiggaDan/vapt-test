@@ -3,17 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Management Console</title> <style>
-        /* This section removes all margins and ensures the iframe fills the screen */
+    <title>Management Console</title>
+    <style>
+        /* Ensures the iframe takes up the whole screen without scrollbars */
         body, html {
             margin: 0;
             padding: 0;
             height: 100%;
             width: 100%;
-            overflow: hidden; /* Prevents scrollbars on your attacker page */
+            overflow: hidden;
         }
 
-        /* This removes the red box/borders and makes the frame 100% of the viewport */
+        /* Seamless full-screen iframe */
         .target-frame { 
             border: none;
             width: 100vw; 
@@ -23,8 +24,6 @@
     </style>
 </head>
 <body>
-
     <iframe src="https://aws.sentiyo.com" class="target-frame"></iframe>
-
 </body>
 </html>
